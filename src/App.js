@@ -1,27 +1,40 @@
-import logo from './logo.svg';
 import './App.css';
+import Logomark from './components/Logomark'
+import UserLogin from './components/UserLogin.js'
+import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from } from '@apollo/client';
+import { onError } from "@apollo/client/link/error";
+
+// Apollo setup
+const errorLink = onError(({ graphqlErrors, networkErrors}) => {
+  if (graphqlErrors) {
+    graphqlErrors.map(({message, location, path}) => {
+      console.error(`GraphQL Error: ${message}`);
+      return 0;
+    });
+  }
+});
+
+const subgraphLink = from([
+  errorLink,
+  new HttpLink({ uri: "https://api.thegraph.com/subgraphs/name/gcbsumid/alpha-rawr-distribution"}),
+]);
+
+const client = new ApolloClient({
+  link: subgraphLink,
+  cache: new InMemoryCache()
+});
 
 function App() {
+
   return (
-    <div className="App">
-      <header className="App-header">    
-        <h1 className="text-3xl font-bold underline">
-          Hello world!
-        </h1>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ApolloProvider client={client}>
+      <div className="bg-gray-600 flex justify-center items-center h-screen w-screen">
+        <div className="flex flex-col">
+          <Logomark />
+          <UserLogin />
+        </div>
+      </div>
+    </ApolloProvider>
   );
 }
 
