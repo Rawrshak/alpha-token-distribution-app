@@ -1,26 +1,22 @@
 
-import { getUserUniqueAssetAmount } from '../queries/queries'
-import { useQuery, gql } from '@apollo/client';
+import Logomark from './Logomark';
+import LoginButton from './LoginButton';
 
 const UserLogin = () => {
 
-    const { loading, error, data } = useQuery(getUserUniqueAssetAmount, {
-      variables: {
-        accountId: "0x0eeacd4c475040463389d15ead034d1291b008b1"
-      }
-    });
-  
-    console.log(data);
-
     return (
-        <div className="flex flex-col">
-            <div >
-                Account: {data.account.id}
-            </div>
-            <div >
-                uniqueAssetsCount: {data.account.uniqueAssetsCount}
+
+        <div className="w-full bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="md:flex flex-row ">
+                <div className="md:shrink-0 ">
+                    <Logomark />
+                </div>
+                <div className='bg-gray-500 md:flex w-full justify-center items-center '>
+                    <LoginButton />
+                </div>
             </div>
         </div>
+
     )
 }
 

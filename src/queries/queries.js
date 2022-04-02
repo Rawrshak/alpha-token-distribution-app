@@ -1,9 +1,42 @@
 import { gql } from '@apollo/client';
 
-export const getUserUniqueAssetAmount = gql`
-    query GetUserUniqueAssetAmount($accountId: String!) {
+export const getUserData = gql`
+    query GetUserData($accountId: String!) {
         account (id: $accountId) {
             id
+            uniqueAssetsCount
+            ordersCount
+            orderFillsCount
+            cancelledOrdersCount
+            claimedOrdersCount
+            makerVolume 
+            takerVolume
+            daysActive
+        }
+    }
+`
+
+export const getSystemData = gql`
+    query GetSystemData {
+        exchange (id: "0xd73651871acc74657e51a7233edf247c7c7495ee") {
+            id
+            ordersCount
+            orderFillsCount
+            ordersClaimedCount
+            ordersCancelledCount
+            orderVolume
+            totalUserActiveDays
+        }
+    }
+`
+
+export const getContentStats = gql`
+    query GetContentStats {
+        contentStatisticsManager (id: "0x35c18b621c5b5ccf29e3edec5ae0ac98b26192d3") {
+            id
+            contentsCount
+            assetsCount
+            accountsCount
             uniqueAssetsCount
         }
     }

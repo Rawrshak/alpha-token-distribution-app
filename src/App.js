@@ -1,8 +1,8 @@
 import './App.css';
-import Logomark from './components/Logomark'
-import UserLogin from './components/UserLogin.js'
 import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, from } from '@apollo/client';
+import { Web3Provider } from './data/Web3Context';
 import { onError } from "@apollo/client/link/error";
+import DisplayContent from './components/DisplayContent';
 
 // Apollo setup
 const errorLink = onError(({ graphqlErrors, networkErrors}) => {
@@ -25,17 +25,13 @@ const client = new ApolloClient({
 });
 
 function App() {
-
-  return (
-    <ApolloProvider client={client}>
-      <div className="bg-gray-600 flex justify-center items-center h-screen w-screen">
-        <div className="flex flex-col">
-          <Logomark />
-          <UserLogin />
-        </div>
-      </div>
-    </ApolloProvider>
-  );
+    return (
+        <ApolloProvider client={client}>
+            <Web3Provider >
+                <DisplayContent />
+            </Web3Provider>
+        </ApolloProvider>
+    );
 }
 
 export default App;
