@@ -4,67 +4,185 @@ import Logomark from './Logomark';
 import { WebContext } from "../data/Web3Context";
 import { useContext, useState, useEffect } from "react";
 import { ethers } from "ethers";
-import GetExchangeDataQuery from '../queries/GetExchangeData';
-import GetContentStatsDataQuery from '../queries/GetContentStats';
+import GetExchangeData from '../data/GetExchangeData';
+import GetContentStatsManagerData from '../data/GetContentsStatsManagerData';
+import GetWalletData from '../data/GetWalletData';
 
 const TokenDisplay = () => {
     const _1e18 = ethers.BigNumber.from('10').pow(ethers.BigNumber.from('18'));
     const web3Data = useContext(WebContext);
-    const [accountData, setAccountData] = useState(0);
-    // const [exchangeData, setExchangeData] = useState(0);
+    const [userUniqueAssetsCount, setUserUniqueAssetsCount] = useState(<div>Loading...</div>);
+    const [userOrdersCount, setUserOrdersCount] = useState(<div>Loading...</div>);
+    const [userOrderFillsCount, setUserOrderFillsCount] = useState(<div>Loading...</div>);
+    const [userOrdersClaimed, setUserOrdersClaimedCount] = useState(<div>Loading...</div>);
+    const [userOrdersCancelled, setUserOrdersCancelledCount] = useState(<div>Loading...</div>);
+    const [userMakerVolume, setUserMakerVolume] = useState(<div>Loading...</div>);
+    const [userTakerVolume, setUserTakerVolume] = useState(<div>Loading...</div>);
+    const [userDaysActive, setUserDaysActive] = useState(<div>Loading...</div>);
 
     // Query the account's data
-    const { loading, error, data } = useQuery(getUserData, {
-        variables: {
-          accountId: web3Data.state.account
-        }
-    });
-    
-    if (loading) { console.log("Loading..."); }        
-    if (error) console.error(`Error: ${error.message}`);
+    let walletData = GetWalletData(web3Data.state.account);
+    let contentStatsData = GetContentStatsManagerData();
+    let exchangeData = GetExchangeData();
 
     // Once the data is received, get the account Data
     useEffect(() => {
-        if (!loading) {
-            setAccountData(data.account);
-            console.log(data.account);
+
+        let uniqueAssetsCount = 0;
+        let totalUniqueAssetsCount = 0;
+        if (walletData) {
+            uniqueAssetsCount = walletData.uniqueAssetsCount;
         }
-    }, [loading, data]);
+        if (contentStatsData) {
+            totalUniqueAssetsCount = contentStatsData.uniqueAssetsCount;
+        }
+        setUserUniqueAssetsCount(<div>{uniqueAssetsCount} / {totalUniqueAssetsCount}</div>);
+    }, [walletData, contentStatsData]);
 
-    let exchangeData = GetExchangeDataQuery();
+    useEffect(() => {
+        let ordersCount = 0;
+        let totalOrderCount = 0;
+        if (walletData) {
+            ordersCount = walletData.ordersCount;
+        }
+        if (exchangeData) {
+            totalOrderCount = exchangeData.ordersCount;
+        }
+        setUserOrdersCount(
+            <div>
+                {ordersCount} / {totalOrderCount}
+            </div>
+        );
+    }, [walletData, exchangeData]);
 
-    if (exchangeData.props.exchange) {
-        // console.log(exchangeData);
-        console.log(`Exchange Total Orders: ${exchangeData.props.exchange.ordersCount}`);
-    }
+    useEffect(() => {
+        let orderFillsCount = 0;
+        let totalOrderFillsCount = 0;
+        if (walletData) {
+            orderFillsCount = walletData.orderFillsCount;
+        }
+        if (exchangeData) {
+            totalOrderFillsCount = exchangeData.orderFillsCount;
+        }
+        setUserOrderFillsCount(
+            <div>
+                {orderFillsCount} / {totalOrderFillsCount}
+            </div>
+        );
+    }, [walletData, exchangeData]);
 
-    let contentStatsData = GetContentStatsDataQuery();
+    useEffect(() => {
+        let ordersCancelledCount = 0;
+        let totalOrdersCancelledCount = 0;
+        if (walletData) {
+            ordersCancelledCount = walletData.ordersCancelledCount;
+        }
+        if (exchangeData) {
+            totalOrdersCancelledCount = exchangeData.ordersCancelledCount;
+        }
+        setUserOrdersCancelledCount(
+            <div>
+                {ordersCancelledCount} / {totalOrdersCancelledCount}
+            </div>
+        );
+    }, [walletData, exchangeData]);
 
-    if (contentStatsData.props.contentStatisticsManager) {
-        console.log(`Content Stats Data Total Orders: ${contentStatsData.props.contentStatisticsManager.ordersCount}`);
-    }
+    useEffect(() => {
+        let ordersClaimedCount = 0;
+        let totalOrdersClaimedCount = 0;
+        if (walletData) {
+            ordersClaimedCount = walletData.ordersClaimedCount;
+        }
+        if (exchangeData) {
+            totalOrdersClaimedCount = exchangeData.ordersClaimedCount;
+        }
+        setUserOrdersClaimedCount(
+            <div>
+                {ordersClaimedCount} / {totalOrdersClaimedCount}
+            </div>
+        );
+    }, [walletData, exchangeData]);
+
+    // Get Maker Volume
+    useEffect(() => {
+        let makerVolume = 0;
+        let totalVolume = 0;
+        if (walletData) {
+            makerVolume = walletData.makerVolume;
+        }
+        if (exchangeData) {
+            totalVolume = exchangeData.orderVolume;
+        }
+        setUserMakerVolume(
+            <div>
+                {fromWei(makerVolume)} / {fromWei(totalVolume)}
+            </div>
+        );
+    }, [walletData, exchangeData]);
+
+    // Get Taker Volume
+    useEffect(() => {
+        let takerVolume = 0;
+        let totalVolume = 0;
+        if (walletData) {
+            takerVolume = walletData.takerVolume;
+        }
+        if (exchangeData) {
+            totalVolume = exchangeData.orderVolume;
+        }
+        setUserTakerVolume(
+            <div>
+                {fromWei(takerVolume)} / {fromWei(totalVolume)}
+            </div>
+        );
+    }, [walletData, exchangeData]);
+
+    // Get Days Active
+    useEffect(() => {
+        let daysActive = 0;
+        let totalUserDaysActive = 0;
+        if (walletData) {
+            daysActive = walletData.takerVolume;
+        }
+        if (exchangeData && contentStatsData) {
+            totalUserDaysActive = ethers.BigNumber.from(exchangeData.totalUserActiveDays).add(ethers.BigNumber.from(contentStatsData.accountsCount));
+        }
+        setUserDaysActive(
+            <div>
+                {daysActive} / {totalUserDaysActive.toString()}
+            </div>
+        );
+    }, [walletData, exchangeData, contentStatsData]);
 
 
 
-    // // Query the Total Data
-    // const { exchangeLoading, exchangeQueryData } = useQuery(getSystemData, {});
-    
-    // // Once the data is received, get the account Data
-    // useEffect(() => {
-    //     if (!exchangeLoading) {
-    //         console.log("Exchange Data" + exchangeData);
-    //         setExchangeData(exchangeData.exchange);
-    //     }
-    // }, [exchangeLoading, exchangeQueryData]);
+    useEffect(() => {
+        if (exchangeData) {
+            console.log(`Exchange exists: ${exchangeData.ordersCount}`);
+        } else {
+            console.log("Exchange doesn't exist yet.");
+        }
+    }, [exchangeData]);
+
+    useEffect(() => {
+        if (contentStatsData) {
+            console.log(`Content Stats Manager exists: ${contentStatsData.uniqueAssetsCount}`);
+            console.log(`Content Stats Manager exists: ${contentStatsData.accountsCount}`);
+            console.log(`Content Stats Manager exists: ${contentStatsData.assetsCount}`);
+            console.log(`Content Stats Manager exists: ${contentStatsData.contentsCount}`);
+        } else {
+            console.log("Contents Stats Manager doesn't exist yet.");
+        }
+    }, [contentStatsData]);
     
 
     function fromWei(number) {
         return (number / _1e18).toString();
     }
 
-    function calcTotalDays() {
-        return exchangeData.props.exchange.totalUserActiveDays + contentStatsData.props.contentStatisticsManager.accountsCount;
-    }
+    // function calcTotalDays() {
+    //     return exchangeData.props.exchange.totalUserActiveDays + contentStatsData.props.contentStatisticsManager.accountsCount;
+    // }
 
     return (
         <div className="w-full bg-white rounded-xl flex flex-row">
@@ -92,83 +210,49 @@ const TokenDisplay = () => {
                     <div className="font-bold">
                         Unique Asset Count:
                     </div>
-                    <div>
-                        {accountData.uniqueAssetsCount} / {contentStatsData.props.contentStatisticsManager.uniqueAssetsCount}
-                    </div>
+                    {userUniqueAssetsCount}
                 </div>
                 <div className="py-1 flex flex-row justify-between md:shrink-0 ">
                     <div className="font-bold">
                         Orders Created:
                     </div>
-                    {/* <div>
-                        {accountData.ordersCount}
-                    </div> */}
-                    <div>
-                        {accountData.ordersCount} / {exchangeData.props.exchange.ordersCount}
-                    </div>
+                    {userOrdersCount}
                 </div>
                 <div className="py-1 flex flex-row justify-between md:shrink-0 ">
                     <div className="font-bold">
                         Filled Orders:
                     </div>
-                    {/* <div>
-                        {accountData.orderFillsCount}
-                    </div> */}
-                    <div>
-                        {accountData.orderFillsCount} / {exchangeData.props.exchange.orderFillsCount}
-                    </div>
+                    {userOrderFillsCount}
                 </div>
                 <div className="py-1 flex flex-row justify-between md:shrink-0 ">
                     <div className="font-bold">
                         Cancelled Orders:
                     </div>
-                    {/* <div>
-                        {accountData.cancelledOrdersCount}
-                    </div> */}
-                    <div>
-                        {accountData.cancelledOrdersCount} / {exchangeData.props.exchange.ordersCancelledCount}
-                    </div>
+                    {userOrdersCancelled}
                 </div>
                 <div className="py-1 flex flex-row justify-between md:shrink-0 ">
                     <div className="font-bold">
                         Claimed Filled or Partially Filled Orders:
                     </div>
-                    {/* <div>
-                        {accountData.claimedOrdersCount}
-                    </div> */}
-                    <div>
-                        {accountData.claimedOrdersCount} / {exchangeData.props.exchange.ordersClaimedCount}
-                    </div>
+                    {userOrdersClaimed}
                 </div>
                 <div className="py-1 flex flex-row justify-between md:shrink-0 ">
                     <div className="font-bold">
                         Maker Volume:
                     </div>
-                    {/* <div>
-                        {fromWei(accountData.makerVolume)} 
-                    </div> */}
-                    <div>
-                        {fromWei(accountData.makerVolume)} / {fromWei(exchangeData.props.exchange.orderVolume) }
-                    </div>
+                    {userMakerVolume}
                 </div>
                 <div className="py-1 flex flex-row justify-between md:shrink-0 ">
                     <div className="font-bold">
                         Taker Volume:
                     </div>
-                    {/* <div>
-                        {fromWei(accountData.takerVolume)} 
-                    </div> */}
-                    <div>
-                        {fromWei(accountData.takerVolume)} / {fromWei(exchangeData.props.exchange.orderVolume) }
-                    </div>
+                    {userTakerVolume}
                 </div>
                 <div className="py-1 flex flex-row justify-between md:shrink-0 ">
                     <div className="font-bold">
                         Days Active:
                     </div>
-                    <div>
-                        {accountData.daysActive} / {calcTotalDays()}
-                    </div>
+                    {userDaysActive}
                 </div>
             </div>
         </div>
