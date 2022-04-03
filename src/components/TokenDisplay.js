@@ -211,16 +211,18 @@ const TokenDisplay = () => {
     }
 
     return (
-        <div className="flex flex-col bg-white rounded-xl">
-            <div className="px-4 leading-normal w-full grid grid-cols-3">
-                <div className="pt-2 font-bold">
-                    Wallet: 
+        <div className="flex flex-col bg-white rounded-xl divide-y divide-double">
+
+            <div className='flex flex-row py-4 px-4 justify-between text-lg font-bold'>
+                <div >
+                    Logged In Wallet: 
                 </div>
-                <div className="pt-2 place-self-end">
-                </div>
-                <div className="pt-2 truncate">
+                <div className="truncate">
                     {web3Data.state.account}
                 </div>
+            </div>
+
+            <div className="px-4 leading-normal w-full grid grid-cols-3">
                 <div className="pt-2 font-bold">
                     Unique Asset Count:
                 </div>
