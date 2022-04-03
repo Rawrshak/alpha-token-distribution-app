@@ -11,7 +11,7 @@ function GetWalletData(walletAddress) {
     });
     
     if (loading) {
-        console.log("Contents Stats manager is still loading...");
+        console.log("Wallet Data is still loading...");
         return null;
     }
     if (error) {

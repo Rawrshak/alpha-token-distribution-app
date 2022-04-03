@@ -5,7 +5,7 @@ const GetExchangeData = () => {
    const { loading, error, data } = useQuery(getSystemData);
  
     if (loading) {
-        console.log("Contents Stats manager is still loading...");
+        console.log("Exchange is still loading...");
         return null;
     }
 

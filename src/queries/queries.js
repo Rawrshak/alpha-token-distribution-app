@@ -12,6 +12,8 @@ export const getUserData = gql`
             makerVolume 
             takerVolume
             daysActive
+            contractsDeployedCount
+            assetsDeployedCount
         }
     }
 `
@@ -24,7 +26,8 @@ export const getSystemData = gql`
             orderFillsCount
             ordersClaimedCount
             ordersCancelledCount
-            orderVolume
+            makerVolume
+            takerVolume
             totalUserActiveDays
         }
     }

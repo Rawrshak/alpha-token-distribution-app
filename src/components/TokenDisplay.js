@@ -1,4 +1,3 @@
-import Logomark from './Logomark';
 import { WebContext } from "../data/Web3Context";
 import { useContext, useState, useEffect } from "react";
 import { ethers } from "ethers";
@@ -18,6 +17,8 @@ const TokenDisplay = () => {
     const [userTakerVolume, setUserTakerVolume] = useState(<div>Loading...</div>);
     const [userDaysActive, setUserDaysActive] = useState(<div>Loading...</div>);
 
+    const [userContractsDeployed, setUserContractsDeployed] = useState(<div>Loading...</div>);
+    const [userAssetsDeployed, setUserAssetsDeployed] = useState(<div>Loading...</div>);
     
     const [uniqueAssetsCountRewards, setUniqueAssetsCountRewards] = useState(0);
     const [ordersCreatedRewards, setOrdersCreatedRewards] = useState(0);
@@ -27,6 +28,8 @@ const TokenDisplay = () => {
     const [makerVolumeRewards, setMakerVolumeRewards] = useState(0);
     const [takerVolumeRewards, setTakerVolumeRewards] = useState(0);
     const [daysActiveRewards, setDaysActiveRewards] = useState(0);
+    const [contractsDeployedRewards, setContractsDeployedRewards] = useState(0);
+    const [assetsDeployedRewards, setAssetsDeployedRewards] = useState(0);
 
     const [totalRewards, setTotalRewards] = useState(0);
 
@@ -37,155 +40,97 @@ const TokenDisplay = () => {
 
     // Once the data is received, get the account Data
     useEffect(() => {
-
         let uniqueAssetsCount = 0;
         let totalUniqueAssetsCount = 0;
+        let ordersCount = 0;
+        let totalOrderCount = 0;
+        let orderFillsCount = 0;
+        let totalOrderFillsCount = 0;
+        let ordersCancelledCount = 0;
+        let totalOrdersCancelledCount = 0;
+        let ordersClaimedCount = 0;
+        let totalOrdersClaimedCount = 0;
+        let makerVolume = 0;
+        let totalMakerVolume = 0;
+        let takerVolume = 0;
+        let totalTakerVolume = 0;
+        let daysActive = 0;
+        let totalUserDaysActive = 0;
+        let contractsDeployed = 0;
+        let assetsDeployed = 0;
+        let totalContractsDeployed = 0;
+        let totalAssetsDeployed = 0;
+
         if (walletData) {
             uniqueAssetsCount = walletData.uniqueAssetsCount;
+            ordersCount = walletData.ordersCount;
+            orderFillsCount = walletData.orderFillsCount;
+            ordersCancelledCount = walletData.cancelledOrdersCount;
+            ordersClaimedCount = walletData.claimedOrdersCount;
+            makerVolume = walletData.makerVolume;
+            takerVolume = walletData.takerVolume;
+            daysActive = walletData.daysActive;
+            contractsDeployed = walletData.contractsDeployedCount;
+            assetsDeployed = walletData.assetsDeployedCount;
         }
         if (contentStatsData) {
             totalUniqueAssetsCount = contentStatsData.uniqueAssetsCount;
-        }
-        setUserUniqueAssetsCount(<div>{uniqueAssetsCount} / {totalUniqueAssetsCount}</div>);
-
-        let reward = 50000 * uniqueAssetsCount / totalUniqueAssetsCount;
-        setUniqueAssetsCountRewards(Math.floor(reward * 100) / 100)
-    }, [walletData, contentStatsData]);
-
-    useEffect(() => {
-        let ordersCount = 0;
-        let totalOrderCount = 0;
-        if (walletData) {
-            ordersCount = walletData.ordersCount;
+            totalContractsDeployed = contentStatsData.contentsCount;
+            totalAssetsDeployed = contentStatsData.assetsCount;
         }
         if (exchangeData) {
             totalOrderCount = exchangeData.ordersCount;
-        }
-        setUserOrdersCount(
-            <div>
-                {ordersCount} / {totalOrderCount}
-            </div>
-        );
-
-        let reward = 37500 * ordersCount / totalOrderCount;
-        setOrdersCreatedRewards(Math.floor(reward * 100) / 100)
-    }, [walletData, exchangeData]);
-
-    useEffect(() => {
-        let orderFillsCount = 0;
-        let totalOrderFillsCount = 0;
-        if (walletData) {
-            orderFillsCount = walletData.orderFillsCount;
-        }
-        if (exchangeData) {
             totalOrderFillsCount = exchangeData.orderFillsCount;
-        }
-        setUserOrderFillsCount(
-            <div>
-                {orderFillsCount} / {totalOrderFillsCount}
-            </div>
-        );
-        
-        let reward = 37500 * orderFillsCount / totalOrderFillsCount;
-        setOrderFillsRewards(Math.floor(reward * 100) / 100)
-        
-    }, [walletData, exchangeData]);
-
-    useEffect(() => {
-        let ordersCancelledCount = 0;
-        let totalOrdersCancelledCount = 0;
-        if (walletData) {
-            ordersCancelledCount = walletData.cancelledOrdersCount;
-        }
-        if (exchangeData) {
             totalOrdersCancelledCount = exchangeData.ordersCancelledCount;
-        }
-        setUserOrdersCancelledCount(
-            <div>
-                {ordersCancelledCount} / {totalOrdersCancelledCount}
-            </div>
-        );
-        
-        let reward = 12500 * ordersCancelledCount / totalOrdersCancelledCount;
-        setOrdersCancelledRewards(Math.floor(reward * 100) / 100)
-    }, [walletData, exchangeData]);
-
-    useEffect(() => {
-        let ordersClaimedCount = 0;
-        let totalOrdersClaimedCount = 0;
-        if (walletData) {
-            ordersClaimedCount = walletData.claimedOrdersCount;
-        }
-        if (exchangeData) {
             totalOrdersClaimedCount = exchangeData.ordersClaimedCount;
-        }
-        setUserOrdersClaimedCount(
-            <div>
-                {ordersClaimedCount} / {totalOrdersClaimedCount}
-            </div>
-        );
-        
-        let reward = 12500 * ordersClaimedCount / totalOrdersClaimedCount;
-        setOrdersClaimedRewards(Math.floor(reward * 100) / 100)
-        
-    }, [walletData, exchangeData]);
-
-    // Get Maker Volume
-    useEffect(() => {
-        let makerVolume = 0;
-        let totalVolume = 0;
-        if (walletData) {
-            makerVolume = walletData.makerVolume;
-        }
-        if (exchangeData) {
-            totalVolume = exchangeData.orderVolume;
-        }
-        setUserMakerVolume(
-            <div>
-                {fromWei(makerVolume)} / {fromWei(totalVolume)}
-            </div>
-        );
-        let reward = 37500 * makerVolume / totalVolume;
-        setMakerVolumeRewards(Math.floor(reward * 100) / 100)
-    }, [walletData, exchangeData]);
-
-    // Get Taker Volume
-    useEffect(() => {
-        let takerVolume = 0;
-        let totalVolume = 0;
-        if (walletData) {
-            takerVolume = walletData.takerVolume;
-        }
-        if (exchangeData) {
-            totalVolume = exchangeData.orderVolume;
-        }
-        setUserTakerVolume(
-            <div>
-                {fromWei(takerVolume)} / {fromWei(totalVolume)}
-            </div>
-        );
-        let reward = 37500 * takerVolume / totalVolume;
-        setTakerVolumeRewards(Math.floor(reward * 100) / 100)
-    }, [walletData, exchangeData]);
-
-    // Get Days Active
-    useEffect(() => {
-        let daysActive = 0;
-        let totalUserDaysActive = 0;
-        if (walletData) {
-            daysActive = walletData.daysActive;
+            totalMakerVolume = exchangeData.makerVolume;
+            totalTakerVolume = exchangeData.takerVolume;
         }
         if (exchangeData && contentStatsData) {
             totalUserDaysActive = ethers.BigNumber.from(exchangeData.totalUserActiveDays).add(ethers.BigNumber.from(contentStatsData.accountsCount));
         }
-        setUserDaysActive(
-            <div>
-                {daysActive} / {totalUserDaysActive.toString()}
-            </div>
-        );
-        let reward = 25000 * daysActive / totalUserDaysActive;
-        setDaysActiveRewards(Math.floor(reward * 100) / 100)
-    }, [walletData, exchangeData, contentStatsData]);
+
+        setUserUniqueAssetsCount(<div>{uniqueAssetsCount} / {totalUniqueAssetsCount}</div>);
+        setUserOrdersCount(<div>{ordersCount} / {totalOrderCount}</div>);
+        setUserOrderFillsCount(<div>{orderFillsCount} / {totalOrderFillsCount}</div>);
+        setUserOrdersCancelledCount(<div>{ordersCancelledCount} / {totalOrdersCancelledCount}</div>);
+        setUserOrdersClaimedCount(<div>{ordersClaimedCount} / {totalOrdersClaimedCount}</div>);
+        setUserMakerVolume(<div>{fromWei(makerVolume).toFixed(2).toString()} / {fromWei(totalMakerVolume).toFixed(2).toString()}</div>);
+        setUserTakerVolume(<div>{fromWei(takerVolume).toFixed(2).toString()} / {fromWei(totalTakerVolume).toFixed(2).toString()}</div>);
+        setUserDaysActive(<div>{daysActive} / {totalUserDaysActive.toString()}</div>);
+        setUserContractsDeployed(<div>{contractsDeployed} / {totalContractsDeployed.toString()}</div>);
+        setUserAssetsDeployed(<div>{assetsDeployed} / {totalAssetsDeployed.toString()}</div>);
+
+        let uniqueAssetsReward = 50000 * uniqueAssetsCount / totalUniqueAssetsCount;
+        setUniqueAssetsCountRewards(Math.floor(uniqueAssetsReward * 100) / 100);
+        
+        let ordersCreatedReward = 37500 * ordersCount / totalOrderCount;
+        setOrdersCreatedRewards(Math.floor(ordersCreatedReward * 100) / 100);
+        
+        let orderfillsReward = 37500 * orderFillsCount / totalOrderFillsCount;
+        setOrderFillsRewards(Math.floor(orderfillsReward * 100) / 100);
+
+        let ordersCancelledReward = 12500 * ordersCancelledCount / totalOrdersCancelledCount;
+        setOrdersCancelledRewards(Math.floor(ordersCancelledReward * 100) / 100);
+        
+        let ordersClaimedRewards = 12500 * ordersClaimedCount / totalOrdersClaimedCount;
+        setOrdersClaimedRewards(Math.floor(ordersClaimedRewards * 100) / 100);
+
+        let makerVolumeReward = 37500 * makerVolume / totalMakerVolume;
+        setMakerVolumeRewards(Math.floor(makerVolumeReward * 100) / 100);
+        
+        let takerVolumeReward = 37500 * takerVolume / totalTakerVolume;
+        setTakerVolumeRewards(Math.floor(takerVolumeReward * 100) / 100);
+        
+        let daysActiveReward = 25000 * daysActive / totalUserDaysActive;
+        setDaysActiveRewards(Math.floor(daysActiveReward * 100) / 100);
+        
+        let contractsDeployedRewards = 50000 * contractsDeployed / totalContractsDeployed;
+        setContractsDeployedRewards(Math.floor(contractsDeployedRewards * 100) / 100);
+        
+        let assetsDeployedRewards = 75000 * assetsDeployed / totalAssetsDeployed;
+        setAssetsDeployedRewards(Math.floor(assetsDeployedRewards * 100) / 100);
+    }, [walletData, contentStatsData, exchangeData]);
 
     useEffect(() => {
         var rewards = Number(uniqueAssetsCountRewards) + 
@@ -195,7 +140,9 @@ const TokenDisplay = () => {
                     Number(ordersCancelledRewards) + 
                     Number(makerVolumeRewards) + 
                     Number(takerVolumeRewards) + 
-                    Number(daysActiveRewards);
+                    Number(daysActiveRewards) +
+                    Number(contractsDeployedRewards) + 
+                    Number(assetsDeployedRewards);
         setTotalRewards(rewards.toFixed(2));
     }, [uniqueAssetsCountRewards,
         ordersCreatedRewards,
@@ -204,10 +151,12 @@ const TokenDisplay = () => {
         ordersCancelledRewards,
         makerVolumeRewards,
         takerVolumeRewards,
-        daysActiveRewards]);
+        daysActiveRewards,
+        contractsDeployedRewards,
+        assetsDeployedRewards]);
 
     function fromWei(number) {
-        return (number / _1e18).toString();
+        return (number / _1e18);
     }
 
     return (
@@ -223,6 +172,9 @@ const TokenDisplay = () => {
             </div>
 
             <div className="px-4 leading-normal w-full grid grid-cols-3">
+                <div className='pt-2 col-span-3 place-self-center text-lg font-bold'>
+                    Gamer Rewards
+                </div>
                 <div className="pt-2 font-bold">
                     Unique Asset Count:
                 </div>
@@ -286,16 +238,41 @@ const TokenDisplay = () => {
                 <div className="pt-2 place-self-end">
                     {takerVolumeRewards.toFixed(2)} RAWR
                 </div>
-                <div className="pt-2 font-bold">
+                <div className="py-2 font-bold">
                     Days Active:
                 </div>
                 <div className="py-2 place-self-end">
                     {userDaysActive}
                 </div>
-                <div className="pt-2 place-self-end">
+                <div className="py-2 place-self-end">
                     {daysActiveRewards.toFixed(2)} RAWR
                 </div>
             </div>
+
+            <div className="px-4 leading-normal w-full grid grid-cols-3">
+                <div className='pt-2  col-span-3 place-self-center text-lg font-bold'>
+                    Content Creator Rewards
+                </div>
+                <div className="pt-2 font-bold">
+                    Content Contracts Deployed:
+                </div>
+                <div className="pt-2 place-self-end">
+                    {userContractsDeployed}
+                </div>
+                <div className="pt-2 place-self-end">
+                    {contractsDeployedRewards.toFixed(2)} RAWR
+                </div>
+                <div className="py-2 font-bold">
+                    Assets Deployed:
+                </div>
+                <div className="py-2 place-self-end">
+                    {userAssetsDeployed}
+                </div>
+                <div className="py-2 place-self-end">
+                    {assetsDeployedRewards.toFixed(2)} RAWR
+                </div>
+            </div>
+            
             <div className='flex flex-row pt-5 pb-2 px-4 justify-between text-lg font-bold'>
                 <div >
                     Total RAWR Rewards: 
