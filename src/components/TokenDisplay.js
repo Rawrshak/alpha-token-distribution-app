@@ -20,6 +20,10 @@ const TokenDisplay = () => {
     const [userContractsDeployed, setUserContractsDeployed] = useState(<div>Loading...</div>);
     const [userAssetsDeployed, setUserAssetsDeployed] = useState(<div>Loading...</div>);
     
+    const [week1Participation, setWeek1Participation] = useState(<div>Loading...</div>);
+    const [week2Participation, setWeek2Participation] = useState(<div>Loading...</div>);
+    const [week3Participation, setWeek3Participation] = useState(<div>Loading...</div>);
+    
     const [uniqueAssetsCountRewards, setUniqueAssetsCountRewards] = useState(0);
     const [ordersCreatedRewards, setOrdersCreatedRewards] = useState(0);
     const [orderFillsRewards, setOrderFillsRewards] = useState(0);
@@ -30,6 +34,11 @@ const TokenDisplay = () => {
     const [daysActiveRewards, setDaysActiveRewards] = useState(0);
     const [contractsDeployedRewards, setContractsDeployedRewards] = useState(0);
     const [assetsDeployedRewards, setAssetsDeployedRewards] = useState(0);
+    
+    const [week1Rewards, setWeek1Rewards] = useState(0);
+    const [week2Rewards, setWeek2Rewards] = useState(0);
+    const [week3Rewards, setWeek3Rewards] = useState(0);
+    const [week3BonusMultiplier, setWeek3BonusMultiplier] = useState(0);
 
     const [totalRewards, setTotalRewards] = useState(0);
 
@@ -60,6 +69,13 @@ const TokenDisplay = () => {
         let assetsDeployed = 0;
         let totalContractsDeployed = 0;
         let totalAssetsDeployed = 0;
+        let week1Points = 0;
+        let week1TotalPoints = 0;
+        let week2Points = 0;
+        let week2TotalPoints = 0;
+        let week3Points = 0;
+        let week3TotalPoints = 0;
+        let week3Bonus = false;
 
         if (walletData) {
             uniqueAssetsCount = walletData.uniqueAssetsCount;
@@ -72,11 +88,24 @@ const TokenDisplay = () => {
             daysActive = walletData.daysActive;
             contractsDeployed = walletData.contractsDeployedCount;
             assetsDeployed = walletData.assetsDeployedCount;
+            if (walletData.week1) {
+                week1Points = walletData.week1.points;
+            }
+            if (walletData.week2) {
+                week2Points = walletData.week2.points;
+            }
+            if (walletData.week3) {
+                week3Points = walletData.week3.points;
+                week3Bonus = walletData.week3.bonus;
+            }
         }
         if (contentStatsData) {
             totalUniqueAssetsCount = contentStatsData.uniqueAssetsCount;
             totalContractsDeployed = contentStatsData.contentsCount;
             totalAssetsDeployed = contentStatsData.assetsCount;
+            week1TotalPoints = contentStatsData.w1TotalPoints;
+            week2TotalPoints = contentStatsData.w2TotalPoints;
+            week3TotalPoints = contentStatsData.w3TotalPoints;
         }
         if (exchangeData) {
             totalOrderCount = exchangeData.ordersCount;
@@ -98,8 +127,11 @@ const TokenDisplay = () => {
         setUserMakerVolume(<div>{fromWei(makerVolume).toFixed(2).toString()} / {fromWei(totalMakerVolume).toFixed(2).toString()}</div>);
         setUserTakerVolume(<div>{fromWei(takerVolume).toFixed(2).toString()} / {fromWei(totalTakerVolume).toFixed(2).toString()}</div>);
         setUserDaysActive(<div>{daysActive} / {totalUserDaysActive.toString()}</div>);
-        setUserContractsDeployed(<div>{contractsDeployed} / {totalContractsDeployed.toString()}</div>);
-        setUserAssetsDeployed(<div>{assetsDeployed} / {totalAssetsDeployed.toString()}</div>);
+        setUserContractsDeployed(<div>{contractsDeployed} / {totalContractsDeployed}</div>);
+        setUserAssetsDeployed(<div>{assetsDeployed} / {totalAssetsDeployed}</div>);
+        setWeek1Participation(<div>{week1Points} / {week1TotalPoints}</div>);
+        setWeek2Participation(<div>{week2Points} / {week2TotalPoints}</div>);
+        setWeek3Participation(<div>{week3Points} / {week3TotalPoints}</div>);
 
         let uniqueAssetsReward = 50000 * uniqueAssetsCount / totalUniqueAssetsCount;
         setUniqueAssetsCountRewards(Math.floor(uniqueAssetsReward * 100) / 100);
@@ -130,20 +162,34 @@ const TokenDisplay = () => {
         
         let assetsDeployedRewards = 75000 * assetsDeployed / totalAssetsDeployed;
         setAssetsDeployedRewards(Math.floor(assetsDeployedRewards * 100) / 100);
+        
+        // Note: Week 3 bonus gives a 10% increase in rewards
+        let week1Rewards = 25000 * week1Points / week1TotalPoints;
+        setWeek1Rewards(Math.floor(week1Rewards * 100) / 100);
+        
+        let week2Rewards = 25000 * week2Points / week2TotalPoints;
+        setWeek2Rewards(Math.floor(week2Rewards * 100) / 100);
+        
+        let week3Rewards = 25000 * week3Points / week3TotalPoints;
+        setWeek3Rewards(Math.floor(week3Rewards * 100) / 100);
+
+        setWeek3BonusMultiplier(week3Bonus);
     }, [walletData, contentStatsData, exchangeData]);
 
     useEffect(() => {
-        var rewards = Number(uniqueAssetsCountRewards) + 
-                    Number(ordersCreatedRewards) + 
-                    Number(orderFillsRewards) + 
-                    Number(ordersClaimedRewards) + 
-                    Number(ordersCancelledRewards) + 
-                    Number(makerVolumeRewards) + 
-                    Number(takerVolumeRewards) + 
-                    Number(daysActiveRewards) +
-                    Number(contractsDeployedRewards) + 
-                    Number(assetsDeployedRewards);
-        setTotalRewards(rewards.toFixed(2));
+        var rewards = 
+                    uniqueAssetsCountRewards + 
+                    ordersCreatedRewards + 
+                    orderFillsRewards + 
+                    ordersClaimedRewards + 
+                    ordersCancelledRewards + 
+                    makerVolumeRewards + 
+                    takerVolumeRewards + 
+                    daysActiveRewards +
+                    contractsDeployedRewards + 
+                    assetsDeployedRewards +
+                    (week1Rewards + week2Rewards + week3Rewards) * (week3BonusMultiplier ? 1.1 : 1);
+        setTotalRewards(Number(rewards).toFixed(2));
     }, [uniqueAssetsCountRewards,
         ordersCreatedRewards,
         orderFillsRewards,
@@ -153,7 +199,11 @@ const TokenDisplay = () => {
         takerVolumeRewards,
         daysActiveRewards,
         contractsDeployedRewards,
-        assetsDeployedRewards]);
+        assetsDeployedRewards,
+        week1Rewards,
+        week2Rewards,
+        week3Rewards,
+        week3BonusMultiplier]);
 
     function fromWei(number) {
         return (number / _1e18);
@@ -171,12 +221,15 @@ const TokenDisplay = () => {
                 </div>
             </div>
 
-            <div className="px-4 leading-normal w-full grid grid-cols-3">
-                <div className='pt-2 col-span-3 place-self-center text-lg font-bold'>
+            <div className="px-4 leading-normal w-full grid grid-cols-4">
+                <div className='pt-2 col-span-4 place-self-center text-lg font-bold'>
                     Gamer Rewards
                 </div>
                 <div className="pt-2 font-bold">
                     Unique Asset Count:
+                </div>
+                <div className="pt-2 font-bold place-self-end">
+                    50000 RAWR
                 </div>
                 <div className="pt-2 place-self-end">
                     {userUniqueAssetsCount}
@@ -185,7 +238,10 @@ const TokenDisplay = () => {
                     {uniqueAssetsCountRewards.toFixed(2)} RAWR
                 </div>
                 <div className="pt-2 font-bold">
-                    Orders Created:
+                    Maker Orders:
+                </div>
+                <div className="pt-2 font-bold place-self-end">
+                    37500 RAWR
                 </div>
                 <div className="pt-2 place-self-end">
                     {userOrdersCount}
@@ -194,7 +250,10 @@ const TokenDisplay = () => {
                     {ordersCreatedRewards.toFixed(2)} RAWR
                 </div>
                 <div className="pt-2 font-bold">
-                    Filled Orders:
+                    Taker Orders:
+                </div>
+                <div className="pt-2 font-bold place-self-end">
+                    37500 RAWR
                 </div>
                 <div className="pt-2 place-self-end">
                     {userOrderFillsCount}
@@ -205,6 +264,9 @@ const TokenDisplay = () => {
                 <div className="pt-2 font-bold">
                     Cancelled Orders:
                 </div>
+                <div className="pt-2 font-bold place-self-end">
+                    12500 RAWR
+                </div>
                 <div className="pt-2 place-self-end">
                     {userOrdersCancelled}
                 </div>
@@ -212,7 +274,10 @@ const TokenDisplay = () => {
                     {ordersCancelledRewards.toFixed(2)} RAWR
                 </div>
                 <div className="pt-2 font-bold">
-                    Claimed Filled or Partially Filled Orders:
+                    Claimed Filled or Partially Filled Maker Orders:
+                </div>
+                <div className="pt-2 font-bold place-self-end">
+                    12500 RAWR
                 </div>
                 <div className="pt-2 place-self-end">
                     {userOrdersClaimed}
@@ -223,6 +288,9 @@ const TokenDisplay = () => {
                 <div className="pt-2 font-bold">
                     Maker Volume:
                 </div>
+                <div className="pt-2 font-bold place-self-end">
+                    37500 RAWR
+                </div>
                 <div className="pt-2 place-self-end">
                     {userMakerVolume}
                 </div>
@@ -231,6 +299,9 @@ const TokenDisplay = () => {
                 </div>
                 <div className="pt-2 font-bold">
                     Taker Volume:
+                </div>
+                <div className="pt-2 font-bold place-self-end">
+                    37500 RAWR
                 </div>
                 <div className="pt-2 place-self-end">
                     {userTakerVolume}
@@ -241,6 +312,9 @@ const TokenDisplay = () => {
                 <div className="py-2 font-bold">
                     Days Active:
                 </div>
+                <div className="pt-2 font-bold place-self-end">
+                    25000 RAWR
+                </div>
                 <div className="py-2 place-self-end">
                     {userDaysActive}
                 </div>
@@ -249,12 +323,15 @@ const TokenDisplay = () => {
                 </div>
             </div>
 
-            <div className="px-4 leading-normal w-full grid grid-cols-3">
-                <div className='pt-2  col-span-3 place-self-center text-lg font-bold'>
+            <div className="px-4 leading-normal w-full grid grid-cols-4">
+                <div className='pt-2  col-span-4 place-self-center text-lg font-bold'>
                     Content Creator Rewards
                 </div>
                 <div className="pt-2 font-bold">
                     Content Contracts Deployed:
+                </div>
+                <div className="pt-2 font-bold place-self-end">
+                    50000 RAWR
                 </div>
                 <div className="pt-2 place-self-end">
                     {userContractsDeployed}
@@ -265,11 +342,67 @@ const TokenDisplay = () => {
                 <div className="py-2 font-bold">
                     Assets Deployed:
                 </div>
+                <div className="pt-2 font-bold place-self-end">
+                    75000 RAWR
+                </div>
                 <div className="py-2 place-self-end">
                     {userAssetsDeployed}
                 </div>
                 <div className="py-2 place-self-end">
                     {assetsDeployedRewards.toFixed(2)} RAWR
+                </div>
+            </div>
+
+            <div className="px-4 leading-normal w-full grid grid-cols-4">
+                <div className='pt-2  col-span-4 place-self-center text-lg font-bold'>
+                    Weekly Event Rewards
+                </div>
+                <div className="pt-2 font-bold">
+                    Week 1 Participation:
+                </div>
+                <div className="pt-2 font-bold place-self-end">
+                    25000 RAWR
+                </div>
+                <div className="pt-2 place-self-end">
+                    {week1Participation}
+                </div>
+                <div className="pt-2 place-self-end">
+                    {week1Rewards.toFixed(2)} RAWR
+                </div>
+                <div className="pt-2 font-bold">
+                    Week 2 Participation:
+                </div>
+                <div className="pt-2 font-bold place-self-end">
+                    25000 RAWR
+                </div>
+                <div className="pt-2 place-self-end">
+                    {week2Participation}
+                </div>
+                <div className="pt-2 place-self-end">
+                    {week2Rewards.toFixed(2)} RAWR
+                </div>
+                <div className="pt-2 font-bold">
+                    Week 3 Participation:
+                </div>
+                <div className="pt-2 font-bold place-self-end">
+                    25000 RAWR
+                </div>
+                <div className="pt-2 place-self-end">
+                    {week3Participation}
+                </div>
+                <div className="pt-2 place-self-end">
+                    {week3Rewards.toFixed(2)} RAWR
+                </div>
+                <div className='py-2 place-self-start font-bold'>
+                    Week 3 Bonus:
+                </div>
+                <div className="py-2 font-bold place-self-end">
+                    10%
+                </div>
+                <div className="py-2 font-bold place-self-end">
+                </div>
+                <div className="py-2 place-self-end font-bold">
+                    {week3BonusMultiplier ? "YES" : "NO"}
                 </div>
             </div>
             

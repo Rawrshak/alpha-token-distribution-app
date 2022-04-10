@@ -14,6 +14,20 @@ export const getUserData = gql`
             daysActive
             contractsDeployedCount
             assetsDeployedCount
+            week1 {
+                points
+                disqualified
+            }
+            week2 {
+                points
+                disqualified
+                bonus
+            }
+            week3 {
+                points
+                disqualified
+                bonus
+            }
         }
     }
 `
@@ -41,6 +55,9 @@ export const getContentStats = gql`
             assetsCount
             accountsCount
             uniqueAssetsCount
+            w1TotalPoints
+            w2TotalPoints
+            w3TotalPoints
         }
     }
 `
