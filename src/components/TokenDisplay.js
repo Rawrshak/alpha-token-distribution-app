@@ -228,7 +228,7 @@ const TokenDisplay = () => {
                 <div className="pt-2 font-bold">
                     Unique Asset Count:
                 </div>
-                <div className="pt-2 font-bold place-self-end">
+                <div className="pt-2 place-self-end">
                     50000 RAWR
                 </div>
                 <div className="pt-2 place-self-end">
@@ -240,7 +240,7 @@ const TokenDisplay = () => {
                 <div className="pt-2 font-bold">
                     Maker Orders:
                 </div>
-                <div className="pt-2 font-bold place-self-end">
+                <div className="pt-2 place-self-end">
                     37500 RAWR
                 </div>
                 <div className="pt-2 place-self-end">
@@ -252,7 +252,7 @@ const TokenDisplay = () => {
                 <div className="pt-2 font-bold">
                     Taker Orders:
                 </div>
-                <div className="pt-2 font-bold place-self-end">
+                <div className="pt-2 place-self-end">
                     37500 RAWR
                 </div>
                 <div className="pt-2 place-self-end">
@@ -264,7 +264,7 @@ const TokenDisplay = () => {
                 <div className="pt-2 font-bold">
                     Cancelled Orders:
                 </div>
-                <div className="pt-2 font-bold place-self-end">
+                <div className="pt-2 place-self-end">
                     12500 RAWR
                 </div>
                 <div className="pt-2 place-self-end">
@@ -276,7 +276,7 @@ const TokenDisplay = () => {
                 <div className="pt-2 font-bold">
                     Claimed Filled or Partially Filled Maker Orders:
                 </div>
-                <div className="pt-2 font-bold place-self-end">
+                <div className="pt-2 place-self-end">
                     12500 RAWR
                 </div>
                 <div className="pt-2 place-self-end">
@@ -288,7 +288,7 @@ const TokenDisplay = () => {
                 <div className="pt-2 font-bold">
                     Maker Volume:
                 </div>
-                <div className="pt-2 font-bold place-self-end">
+                <div className="pt-2 place-self-end">
                     37500 RAWR
                 </div>
                 <div className="pt-2 place-self-end">
@@ -300,7 +300,7 @@ const TokenDisplay = () => {
                 <div className="pt-2 font-bold">
                     Taker Volume:
                 </div>
-                <div className="pt-2 font-bold place-self-end">
+                <div className="pt-2 place-self-end">
                     37500 RAWR
                 </div>
                 <div className="pt-2 place-self-end">
@@ -312,7 +312,7 @@ const TokenDisplay = () => {
                 <div className="py-2 font-bold">
                     Days Active:
                 </div>
-                <div className="pt-2 font-bold place-self-end">
+                <div className="pt-2 place-self-end">
                     25000 RAWR
                 </div>
                 <div className="py-2 place-self-end">
@@ -330,7 +330,7 @@ const TokenDisplay = () => {
                 <div className="pt-2 font-bold">
                     Content Contracts Deployed:
                 </div>
-                <div className="pt-2 font-bold place-self-end">
+                <div className="pt-2 place-self-end">
                     50000 RAWR
                 </div>
                 <div className="pt-2 place-self-end">
@@ -342,7 +342,7 @@ const TokenDisplay = () => {
                 <div className="py-2 font-bold">
                     Assets Deployed:
                 </div>
-                <div className="pt-2 font-bold place-self-end">
+                <div className="pt-2 place-self-end">
                     75000 RAWR
                 </div>
                 <div className="py-2 place-self-end">
@@ -360,7 +360,7 @@ const TokenDisplay = () => {
                 <div className="pt-2 font-bold">
                     Week 1 Participation:
                 </div>
-                <div className="pt-2 font-bold place-self-end">
+                <div className="pt-2 place-self-end">
                     25000 RAWR
                 </div>
                 <div className="pt-2 place-self-end">
@@ -372,7 +372,7 @@ const TokenDisplay = () => {
                 <div className="pt-2 font-bold">
                     Week 2 Participation:
                 </div>
-                <div className="pt-2 font-bold place-self-end">
+                <div className="pt-2 place-self-end">
                     25000 RAWR
                 </div>
                 <div className="pt-2 place-self-end">
@@ -384,7 +384,7 @@ const TokenDisplay = () => {
                 <div className="pt-2 font-bold">
                     Week 3 Participation:
                 </div>
-                <div className="pt-2 font-bold place-self-end">
+                <div className="pt-2 place-self-end">
                     25000 RAWR
                 </div>
                 <div className="pt-2 place-self-end">
