@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/alpha-token-distribution-app/static/css/main.351d25bf.css",
+    "main.js": "/alpha-token-distribution-app/static/js/main.4c326c41.js",
+    "static/js/787.8dbf3a2c.chunk.js": "/alpha-token-distribution-app/static/js/787.8dbf3a2c.chunk.js",
+    "static/media/logomark.svg": "/alpha-token-distribution-app/static/media/logomark.2b4fcc6b01745754d557e0a6ba9b9ec6.svg",
+    "index.html": "/alpha-token-distribution-app/index.html",
+    "main.351d25bf.css.map": "/alpha-token-distribution-app/static/css/main.351d25bf.css.map",
+    "main.4c326c41.js.map": "/alpha-token-distribution-app/static/js/main.4c326c41.js.map",
+    "787.8dbf3a2c.chunk.js.map": "/alpha-token-distribution-app/static/js/787.8dbf3a2c.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.351d25bf.css",
+    "static/js/main.4c326c41.js"
+  ]
+}
